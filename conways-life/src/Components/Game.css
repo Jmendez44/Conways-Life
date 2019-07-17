@@ -1,0 +1,38 @@
+    
+.Board {
+  position: relative;
+  margin: 0 auto;
+  background-color: #F7CB15;
+  background-image:
+      linear-gradient(white 1px, transparent 1px),
+      linear-gradient(90deg, white 1px, transparent 1px);
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
+  
+}
+
+.Cell {
+  background: #76BED0;
+  position: absolute;
+}
+
+.controls {
+  margin-top: 5px;
+  margin-bottom: 14%;
+}
+
+.button {
+  margin-left: 30px;
+  cursor: pointer;
+}
+
+.gba {
+  position: absolute;
+  width: 75vw;
+  pointer-events: none;
+  /* z-index: -50000; */
+}
+
+h3 {
+  margin: 2px 0;
+}

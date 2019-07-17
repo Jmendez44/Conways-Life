@@ -1,71 +1,194 @@
-import React, { Component } from "react";
+import React from "react";
+import "./Game.css";
+import Cell from "./Cell";
 
-class MainComponent extends Component {
-  constructor(props) {
-    super(props);
+const HEIGHT = 320;
+const WIDTH = 600;
+const CELL_SIZE = 10;
 
-    this.continueAnimation = true;
+
+
+class Game extends React.Component {
+  constructor() {
+    super();
+
+    this.board = this.makeEmptyBoard();
+
+    this.state = {
+      cells: [],
+      isRunning: false,
+      interval: 25
+    };
   }
 
+  rows = HEIGHT / CELL_SIZE;
+  cols = WIDTH / CELL_SIZE;
 
-  /**
-   * After the component has mounted
-   */
-  componentDidMount() {
-    const canvas = this.refs.canvas;
-    const ctx = canvas.getContext("2d");
-
-    for (var x = 0.5; x < 501; x += 10) {
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, 500);
+  makeEmptyBoard = () => {
+    let board = [];
+    for (let y = 0; y < this.rows; y++) {
+      board[y] = [];
+      for (let x = 0; x < this.cols; x++) {
+        board[y][x] = false;
+      }
     }
 
-    for (var y = 0.5; y < 501; y += 10) {
-      ctx.moveTo(0, y);
-      ctx.lineTo(500, y);
+    return board;
+  };
+
+  makeCells = () => {
+    let cells = [];
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        if (this.board[y][x]) {
+          cells.push({ x, y });
+        }
+      }
     }
 
-    ctx.moveTo(0, 0);
+    return cells;
+  };
 
-    ctx.strokeStyle = "black";
-    ctx.stroke();
+  clear = () => {
+    this.board = this.makeEmptyBoard();
+    this.setState({ cells: this.makeCells() });
+  };
 
-    // Request initial animation frame
-    // requestAnimationFrame(timestamp => {
-    //   this.onAnimFrame(timestamp);
-    // });
+  random = () => {
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        this.board[y][x] = Math.random() >= 0.5;
+      }
+    }
 
-    ctx.beginPath();
+    this.setState({ cells: this.makeCells() });
+  };
 
-    ctx.fillStyle = "black";
-    ctx.fillRect(250, 250, 10, 10);
-    
-    ctx.fillRect(230, 260, 10, 10)
-    ctx.stroke();
-  }
+  handleIntervalChange = event => {
+    this.setState({ interval: event.target.value });
+  };
 
-  /**
-   * When the component is about to unmount
-   */
-  // componentWillUnmount() {
-  //   // Stop animating
-  //   this.continueAnimation = false;
-  // }
+  run = () => {
+    this.setState({ isRunning: true });
+    this.runIteration();
+  };
 
-  // onAnimFrame(timestamp) {
+  stopGame = () => {
+    this.setState({ isRunning: false });
+    if (this.timeoutHandler) {
+      window.clearTimeout(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  };
 
-  //   if (this.continueAnimation) {
-  //     requestAnimationFrame(timestamp => {
-  //       this.onAnimFrame(timestamp);
-  //     });
-  //   }
+  runIteration = () => {
+    let newBoard = this.makeEmptyBoard();
 
-  //   // TODO animate stuff
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        let neighbors = this.calculateNeighbors(this.board, x, y);
+        if (this.board[y][x]) {
+          if (neighbors === 2 || neighbors === 3) {
+            newBoard[y][x] = true;
+          } else {
+            newBoard[y][x] = false;
+          }
+        } else {
+          if (!this.board[y][x] && neighbors === 3) {
+            newBoard[y][x] = true;
+          }
+        }
+      }
+    }
 
-  // }
+    this.board = newBoard;
+    this.setState({ cells: this.makeCells() });
+
+    this.timeoutHandler = window.setTimeout(() => {
+      this.runIteration();
+    }, this.state.interval);
+  };
+
+  calculateNeighbors = (board, x, y) => {
+    let neighbors = 0;
+    const directions = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [1, -1],
+      [0, -1]
+    ];
+    for (let i = 0; i < directions.length; i++) {
+      const direction = directions[i];
+      let y1 = y + direction[0];
+      let x1 = x + direction[1];
+
+      if (
+        x1 >= 0 &&
+        x1 < this.cols &&
+        y1 >= 0 &&
+        y1 < this.rows &&
+        board[y1][x1]
+      ) {
+        neighbors++;
+      }
+    }
+
+    return neighbors;
+  };
+
   render() {
-    return <canvas ref="canvas" width={500} height={500} />;
+    const { cells, interval, isRunning } = this.state;
+    return (
+      <div>
+        <h3>Conway's Game of Life</h3>
+        <div
+          className="Board"
+          style={{
+            width: WIDTH,
+            height: HEIGHT,
+            backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`
+          }}
+        >
+          {cells.map(cell => (
+            <Cell x={cell.x} y={cell.y} key={`${cell.x}, ${cell.y}`} />
+          ))}
+        </div>
+
+        <div className="controls">
+          Speed{" "}
+          <select
+            value={this.state.interval}
+            onChange={this.handleIntervalChange}
+          >
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="75">75</option>
+            <option value="100">100</option>
+          </select>
+          ms
+          {isRunning ? (
+            <button className="button" onClick={this.stopGame}>
+              Stop
+            </button>
+          ) : (
+            <button className="button" onClick={this.run}>
+              Run
+            </button>
+          )}
+          <button className="button" onClick={this.random}>
+            Random
+          </button>
+          <button className="button" onClick={this.clear}>
+            Clear
+          </button>
+        </div>
+      </div>
+    );
   }
 }
 
-export default MainComponent;
+export default Game;

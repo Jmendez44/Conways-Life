@@ -45,12 +45,21 @@ let fillIn = () => {
     //iterate through rows
 
     for (let k = 0; k < gridWidth; k++) {
+
+      if (j%20 === 0 && k%20 === 0){
+        arr[j][k] = 1;
+      } else {
+        arr[j][k] = null;
+      }
+
+
       //iterate through columns
-      arr[j][k] = 0;
+      
     }
+    
   }
 
-  // arr[1][1] = 1;
+  // arr[21][1] = 1;
   // arr[20][20] = 1;
   // arr[480][480] = 1;
   return arr;
@@ -84,8 +93,8 @@ class Grid extends Component {
         if (this.state.arr[j][k] === 1) {
           ctx.fillStyle = "black";
 
-          ctx.fillRect(j, k, 20, 20);
-        }
+          ctx.fillRect(j, k, 15, 15);
+        } 
       }
     }
   };
@@ -129,15 +138,11 @@ class Grid extends Component {
   getMousePos = (canvas, evt) => {
     
     let rect = canvas.getBoundingClientRect();
-
-    if ((evt.clientX - rect.left)%20 === 0 && (evt.clientY - rect.top)%20 === 0) {
-      return {
-        x: evt.clientX - rect.left ,
-        y: evt.clientY - rect.top 
-      };
-    }
-
-
+    
+    return {
+      x: evt.clientX - rect.left ,
+      y: evt.clientY - rect.top 
+    };
   };
 
   render() {
