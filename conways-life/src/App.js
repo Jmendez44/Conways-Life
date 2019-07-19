@@ -3,6 +3,7 @@ import './App.css';
 import Game from './Components/MainComponent';
 import GBA from './assets/gba.png'
 import Grid from './Components/Grid';
+import Main from './Components/Prac';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       {/* <img className="gba" src={GBA} alt="GBA" /> */}
       
       {/* <Grid /> */}
+      {/* <Main /> */}
     </div>
   );
 }

@@ -2,9 +2,9 @@ import React from "react";
 import "./Game.css";
 import Cell from "./Cell";
 
-const HEIGHT = 320;
+const HEIGHT = 360;
 const WIDTH = 600;
-const CELL_SIZE = 10;
+const CELL_SIZE = 15;
 
 
 
@@ -32,7 +32,7 @@ class Game extends React.Component {
         board[y][x] = false;
       }
     }
-
+    console.log(board)
     return board;
   };
 
@@ -60,8 +60,10 @@ class Game extends React.Component {
         this.board[y][x] = Math.random() >= 0.5;
       }
     }
-
+    // console.log(this.board)
+    
     this.setState({ cells: this.makeCells() });
+    console.log(this.state.cells)
   };
 
   handleIntervalChange = event => {
@@ -126,13 +128,7 @@ class Game extends React.Component {
       let y1 = y + direction[0];
       let x1 = x + direction[1];
 
-      if (
-        x1 >= 0 &&
-        x1 < this.cols &&
-        y1 >= 0 &&
-        y1 < this.rows &&
-        board[y1][x1]
-      ) {
+      if (x1 >= 0 && x1 < this.cols && y1 >= 0 && y1 < this.rows && board[y1][x1]) {
         neighbors++;
       }
     }
@@ -171,18 +167,18 @@ class Game extends React.Component {
           </select>
           ms
           {isRunning ? (
-            <button className="button" onClick={this.stopGame}>
+            <button className="btn" onClick={this.stopGame}>
               Stop
             </button>
           ) : (
-            <button className="button" onClick={this.run}>
+            <button className="btn" onClick={this.run}>
               Run
             </button>
           )}
-          <button className="button" onClick={this.random}>
+          <button className="btn" onClick={this.random}>
             Random
           </button>
-          <button className="button" onClick={this.clear}>
+          <button className="btn" onClick={this.clear}>
             Clear
           </button>
         </div>
