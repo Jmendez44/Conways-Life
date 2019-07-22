@@ -166,6 +166,7 @@ class Game extends React.Component {
             <option value="100">100</option>
           </select>
           ms
+          
           {isRunning ? (
             <button className="btn" onClick={this.stopGame}>
               Stop
