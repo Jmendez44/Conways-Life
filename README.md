@@ -1,4 +1,4 @@
-# Cellular Automata and Conway's "Game of Life"
+# Cellular Automata and Conway's "Game of Life" 
 
 Over the course of this week, students will work on creating their own application in which users will be able to run different "Game of Life" scenarios. This module leads the reader through the fundamentals of Conways's "Game of Life" and will guide them through the process of creating an app utilizing tools and frameworks that have been taught over the course of their specific track.
 
@@ -43,7 +43,7 @@ Over the course of this week, students will work on creating their own applicati
 
 #### Visualizing the “Game of Life”
 The main entry point of your application should house the visualization of this cellular automata. Include necessary components, such as:
-- [ ] Grid to display cells. 
+- [x] Grid to display cells. 
 - [ ] Cell objects or components that, at a minimum, should have:
     * Properties
         - [ ] currentState: (alive, dead), (black, white)
